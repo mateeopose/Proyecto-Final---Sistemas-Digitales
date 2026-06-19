@@ -20,14 +20,14 @@ static uint16_t col_activa_pin = 0;
 static GPIO_TypeDef* col_activa_port = NULL;
 
 // Mapa físico del teclado matricial 4x4
-static const char mapa_teclas[4][4] = {
-    {'1', '2', '3', 'A'},
-    {'4', '5', '6', 'B'},
-    {'7', '8', '9', 'C'},
-    {'*', '0', '#', 'D'}
+static const uint8_t mapa_teclas[4][4] = {
+    {'1', '2', '3', '4'},
+    {'5', '6', '7', '8'},
+    {'9', '10', '11', '12'},
+    {'13', '14', '15', '16'}
 };
 
-// Arreglos utilizando TUS etiquetas del CubeMX
+// Arreglos utilizando  etiquetas del CubeMX
 static GPIO_TypeDef* puertos_filas[4] = {R1_TECLADO_GPIO_Port, R2_TECLADO_GPIO_Port, R3_TECLADO_GPIO_Port, R4_TECLADO_GPIO_Port};
 static uint16_t pines_filas[4]       = {R1_TECLADO_Pin, R2_TECLADO_Pin, R3_TECLADO_Pin, R4_TECLADO_Pin};
 
@@ -71,7 +71,7 @@ void Teclado_Update(void) {
             break;
 
         case ESTADO_BARRIDO: {
-            char tecla_detectada = '\0';
+            uint8_t tecla_detectada = 0;
 
             // 1. Ponemos todas las filas (R) en 1 (Alta Impedancia / Open Drain)
             for(int i = 0; i < 4; i++) {
@@ -96,17 +96,17 @@ void Teclado_Update(void) {
                     }
                 }
 
-                if(tecla_detectada != '\0') break;
+                if(tecla_detectada != 0) break;
 
                 // Devolvemos la fila (R) a 1
                 HAL_GPIO_WritePin(puertos_filas[f], pines_filas[f], GPIO_PIN_SET);
             }
 
-            if(tecla_detectada != '\0') {
+            if(tecla_detectada != 0) {
                 ultima_tecla = tecla_detectada;
-                // ==========================================
+
                 // LÓGICA DE JUEGO (Ej: procesar el movimiento)
-                // ==========================================
+
 
                 estado_actual = ESTADO_ESPERA_SOLTAR;
             } else {
@@ -137,8 +137,8 @@ void Teclado_Update(void) {
     }
 }
 
-char Teclado_GetUltimaTecla(void) {
-    char temp = ultima_tecla;
+uint8_t Teclado_GetUltimaTecla(void) {
+    uint8_t temp = ultima_tecla;
     ultima_tecla = '\0';
     return temp;
 }
