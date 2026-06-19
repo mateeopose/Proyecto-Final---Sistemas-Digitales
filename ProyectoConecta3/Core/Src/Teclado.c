@@ -21,10 +21,10 @@ static GPIO_TypeDef* col_activa_port = NULL;
 
 // Mapa físico del teclado matricial 4x4
 static const uint8_t mapa_teclas[4][4] = {
-    {'1', '2', '3', '4'},
-    {'5', '6', '7', '8'},
-    {'9', '10', '11', '12'},
-    {'13', '14', '15', '16'}
+    {1, 2, 3, 4},
+    {5, 6, 7, 8},
+    {9, 10, 11, 12},
+    {13, 14, 15, 16}
 };
 
 // Arreglos utilizando  etiquetas del CubeMX
