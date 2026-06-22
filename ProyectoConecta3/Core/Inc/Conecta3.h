@@ -1,8 +1,8 @@
 /**
  * @file    Conecta3.h
- * @brief   Cabeceras del motor lógico del juego Conecta 3.
- * @details Define los estados del tablero y expone la API pública para
- * la interacción entre el hardware (teclado/matriz) y el juego.
+ * @brief   Cabeceras del motor lógico y máquina de estados de Conecta 3.
+ * @details Define las estructuras de estado, modos de juego y la API pública
+ * para la gestión de la lógica de control.
  */
 
 #ifndef CONECTA3_H_
@@ -10,15 +10,27 @@
 
 #include <stdint.h>
 
-/* Definiciones de los estados de cada celda del tablero */
+/* Definiciones de celdas del tablero virtual */
 #define VACIO      0
-#define JUGADOR_1  1  // Fichas representadas con color Rojo
-#define JUGADOR_2  2  // Fichas representadas con color Verde
+#define JUGADOR_1  1  /**< Identificador para el Jugador 1 (Fichas Rojas) */
+#define JUGADOR_2  2  /**< Identificador para el Jugador 2 / Máquina (Fichas Verdes) */
 
-/* API Pública del Juego */
+/* Enumeración formal de los estados principales del sistema (FSM) */
+typedef enum {
+    ESTADO_MENU = 0,  /**< Espera de selección de modo de juego */
+    ESTADO_JUEGO,     /**< Partida en curso */
+    ESTADO_VICTORIA   /**< Partida finalizada con un ganador */
+} EstadoJuego_t;
+
+/* Enumeración de los modos de juego soportados */
+typedef enum {
+    MODO_PVP = 0,     /**< Jugador contra Jugador (Local) */
+    MODO_PVM          /**< Jugador contra Máquina (Inteligencia Artificial) */
+} ModoJuego_t;
+
+/* API Pública para el flujo principal del programa */
 void Juego_Init(void);
-uint8_t Juego_ObtenerTurno(void);
-void Juego_Jugar(uint8_t columna);
+void Juego_ProcesarEntrada(uint8_t tecla);
 void Juego_Actualizar(void);
 
 #endif /* CONECTA3_H_ */
