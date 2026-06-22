@@ -10,6 +10,6 @@ void Teclado_Update(void);
 void Teclado_EXTI_Callback(uint16_t GPIO_Pin);
 
 // Función para obtener la última tecla leída (opcional, según cómo manejes la lógica)
-char Teclado_GetUltimaTecla(void);
+uint8_t Teclado_GetUltimaTecla(void);
 
 #endif /* TECLADO_H */

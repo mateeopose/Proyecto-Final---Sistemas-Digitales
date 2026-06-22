@@ -139,6 +139,6 @@ void Teclado_Update(void) {
 
 uint8_t Teclado_GetUltimaTecla(void) {
     uint8_t temp = ultima_tecla;
-    ultima_tecla = '\0';
+    ultima_tecla = 0;
     return temp;
 }
