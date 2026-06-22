@@ -49,6 +49,8 @@ extern "C" {
 
 /* USER CODE END EM */
 
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
+
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
 
@@ -73,6 +75,7 @@ void Error_Handler(void);
 #define PDM_OUT_GPIO_Port GPIOC
 #define B1_Pin GPIO_PIN_0
 #define B1_GPIO_Port GPIOA
+#define B1_EXTI_IRQn EXTI0_IRQn
 #define I2S3_WS_Pin GPIO_PIN_4
 #define I2S3_WS_GPIO_Port GPIOA
 #define SPI1_SCK_Pin GPIO_PIN_5
@@ -85,8 +88,26 @@ void Error_Handler(void);
 #define BOOT1_GPIO_Port GPIOB
 #define CLK_IN_Pin GPIO_PIN_10
 #define CLK_IN_GPIO_Port GPIOB
-#define LD4_Pin GPIO_PIN_12
-#define LD4_GPIO_Port GPIOD
+#define C4_COLUMNA_Pin GPIO_PIN_12
+#define C4_COLUMNA_GPIO_Port GPIOB
+#define C4_COLUMNA_EXTI_IRQn EXTI15_10_IRQn
+#define C3_COLUMNA_Pin GPIO_PIN_13
+#define C3_COLUMNA_GPIO_Port GPIOB
+#define C3_COLUMNA_EXTI_IRQn EXTI15_10_IRQn
+#define C2_COLUMNA_Pin GPIO_PIN_14
+#define C2_COLUMNA_GPIO_Port GPIOB
+#define C2_COLUMNA_EXTI_IRQn EXTI15_10_IRQn
+#define C1_COLUMNA_Pin GPIO_PIN_15
+#define C1_COLUMNA_GPIO_Port GPIOB
+#define C1_COLUMNA_EXTI_IRQn EXTI15_10_IRQn
+#define R4_TECLADO_Pin GPIO_PIN_8
+#define R4_TECLADO_GPIO_Port GPIOD
+#define R3_TECLADO_Pin GPIO_PIN_9
+#define R3_TECLADO_GPIO_Port GPIOD
+#define R2_TECLADO_Pin GPIO_PIN_10
+#define R2_TECLADO_GPIO_Port GPIOD
+#define R1_TECLADO_Pin GPIO_PIN_11
+#define R1_TECLADO_GPIO_Port GPIOD
 #define LD3_Pin GPIO_PIN_13
 #define LD3_GPIO_Port GPIOD
 #define LD5_Pin GPIO_PIN_14

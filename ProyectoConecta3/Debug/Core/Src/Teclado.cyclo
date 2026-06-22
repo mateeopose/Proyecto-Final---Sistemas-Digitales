@@ -1,0 +1,4 @@
+../Core/Src/Teclado.c:39:6:Teclado_Init	2
+../Core/Src/Teclado.c:48:6:Teclado_EXTI_Callback	6
+../Core/Src/Teclado.c:62:6:Teclado_Update	17
+../Core/Src/Teclado.c:140:9:Teclado_GetUltimaTecla	1

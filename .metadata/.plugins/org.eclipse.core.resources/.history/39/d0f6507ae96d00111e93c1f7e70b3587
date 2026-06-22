@@ -1,0 +1,174 @@
+#include "Conecta3.h"
+#include "Leds.h"
+#include "stm32f4xx_hal.h" // Necesario para HAL_GetTick()
+
+static uint8_t tablero[8][4];
+static uint8_t turno_actual = JUGADOR_1;
+
+// Variables de la Máquina de Animación
+static uint8_t animacion_activa = 0;
+static uint8_t anim_fila_actual = 0;
+static uint8_t anim_fila_destino = 0;
+static uint8_t anim_columna = 0;
+static uint8_t anim_jugador = 0;
+static uint32_t anim_tiempo_anterior = 0;
+static uint8_t juego_terminado = 0;
+
+void Juego_Init(void) {
+    turno_actual = JUGADOR_1;
+    juego_terminado = 0;
+    animacion_activa = 0;
+
+    for (int fila = 0; fila < 8; fila++) {
+        for (int col = 0; col < 4; col++) {
+            tablero[fila][col] = VACIO;
+        }
+    }
+    Matriz_Init();
+}
+
+uint8_t Juego_ObtenerTurno(void) {
+    return turno_actual;
+}
+
+// Cuando tocás la tecla, ya NO dibujamos, solo preparamos la animación
+void Juego_Jugar(uint8_t columna) {
+	// Si el juego ya terminó, no dejamos tirar más
+	if (juego_terminado == 1) return;
+
+
+	// Si ya hay una ficha cayendo, ignoramos los botones
+	if (animacion_activa == 1) return;
+
+    if (columna > 3) return;
+
+    // Calculamos la gravedad: Buscamos hasta qué fila va a caer
+    int8_t fila_destino = -1;
+    for (int8_t fila = 7; fila >= 0; fila--) {
+        if (tablero[fila][columna] == VACIO) {
+            fila_destino = fila;
+            break;
+        }
+    }
+
+    // Si había lugar en la columna, disparamos la animación
+    if (fila_destino != -1) {
+        anim_fila_destino = fila_destino;
+        anim_columna = columna;
+        anim_jugador = turno_actual;
+        anim_fila_actual = 0; // Arranca a caer desde el techo (Fila 0)
+
+        anim_tiempo_anterior = HAL_GetTick(); // Guardamos el tiempo actual
+        animacion_activa = 1; // ¡Luz, cámara, acción!
+    }
+}
+// Retorna el número del jugador que ganó (1 o 2), o 0 si nadie ganó todavía.
+static uint8_t VerificarGanador(void) {
+    // 1. Revisar Verticales (|)
+    // Para que haya 3 verticales, tenemos que revisar desde la fila 0 hasta la 5 (porque 5, 6 y 7 hacen 3)
+    for (int col = 0; col < 4; col++) {
+        for (int fila = 0; fila <= 5; fila++) {
+            uint8_t ficha = tablero[fila][col];
+            if (ficha != VACIO &&
+                ficha == tablero[fila + 1][col] &&
+                ficha == tablero[fila + 2][col]) {
+                return ficha; // ¡Alguien ganó!
+            }
+        }
+    }
+
+    // 2. Revisar Horizontales (-)
+    // Para que haya 3 horizontales en 4 columnas, revisamos col 0 y col 1
+    for (int fila = 0; fila < 8; fila++) {
+        for (int col = 0; col <= 1; col++) {
+            uint8_t ficha = tablero[fila][col];
+            if (ficha != VACIO &&
+                ficha == tablero[fila][col + 1] &&
+                ficha == tablero[fila][col + 2]) {
+                return ficha; // ¡Alguien ganó!
+            }
+        }
+    }
+
+    // 3. Revisar Diagonales (Hacia abajo y a la derecha: \)
+    for (int fila = 0; fila <= 5; fila++) {
+        for (int col = 0; col <= 1; col++) {
+            uint8_t ficha = tablero[fila][col];
+            if (ficha != VACIO &&
+                ficha == tablero[fila + 1][col + 1] &&
+                ficha == tablero[fila + 2][col + 2]) {
+                return ficha; // ¡Alguien ganó!
+            }
+        }
+    }
+
+    // 4. Revisar Diagonales (Hacia abajo y a la izquierda: /)
+    for (int fila = 0; fila <= 5; fila++) {
+        for (int col = 2; col < 4; col++) {
+            uint8_t ficha = tablero[fila][col];
+            if (ficha != VACIO &&
+                ficha == tablero[fila + 1][col - 1] &&
+                ficha == tablero[fila + 2][col - 2]) {
+                return ficha; // ¡Alguien ganó!
+            }
+        }
+    }
+
+    return 0; // Nadie ganó aún
+}
+// ESTE ES EL MOTOR DE RENDERIZADO: Se llama todo el tiempo en el main
+void Juego_Actualizar(void) {
+    // Si no hay animación, no hacemos nada y el micro sigue libre
+    if (animacion_activa == 0) return;
+
+    // ¿Pasaron 100 milisegundos desde el último cuadro? (Velocidad de caída)
+    if (HAL_GetTick() - anim_tiempo_anterior >= 100) {
+
+        // Actualizamos el reloj para el próximo frame
+        anim_tiempo_anterior = HAL_GetTick();
+
+        // 1. Redibujamos todo el tablero estático (lo que ya estaba en el fondo)
+        for (int f = 0; f < 8; f++) {
+            for (int c = 0; c < 4; c++) {
+                if (tablero[f][c] == JUGADOR_1) {
+                    Matriz_SetLed(f, c, 100, 0, 0); // Rojas guardadas
+                } else if (tablero[f][c] == JUGADOR_2) {
+                    Matriz_SetLed(f, c, 0, 100, 0); // Verdes guardadas
+                } else {
+                    Matriz_SetLed(f, c, 0, 0, 0);   // Espacio vacío
+                }
+            }
+        }
+
+        // 2. Dibujamos la ficha fantasma que está cayendo en ESTE frame
+        if (anim_jugador == JUGADOR_1) {
+            Matriz_SetLed(anim_fila_actual, anim_columna, 100, 0, 0);
+        } else {
+            Matriz_SetLed(anim_fila_actual, anim_columna, 0, 100, 0);
+        }
+
+        // Mandamos el dibujo físico a la matriz
+        Matriz_Update();
+
+        // 3. Calculamos la lógica para el PRÓXIMO frame
+                if (anim_fila_actual == anim_fila_destino) {
+                    // ¡PUM! Llegó al fondo.
+                    tablero[anim_fila_destino][anim_columna] = anim_jugador;
+                    animacion_activa = 0;
+
+                    // --- ¡NUEVO: REVISAR GANADOR! ---
+                    uint8_t ganador = VerificarGanador();
+
+                    if (ganador != 0) {
+                        juego_terminado = 1; // Bloqueamos el juego
+                        // TODO: ¡Acá podríamos hacer que los LEDs titilen o suene el buzzer de victoria!
+                    } else {
+                        // Si nadie ganó, le toca al otro jugador
+                        turno_actual = (turno_actual == JUGADOR_1) ? JUGADOR_2 : JUGADOR_1;
+                    }
+                } else {
+                    // Si no llegó al fondo, en el próximo frame cae una fila más
+                    anim_fila_actual++;
+                }
+    }
+}

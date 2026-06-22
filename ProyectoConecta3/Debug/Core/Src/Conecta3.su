@@ -1,0 +1,7 @@
+../Core/Src/Conecta3.c:42:6:Juego_ProcesarEntrada	16	static
+../Core/Src/Conecta3.c:89:6:Juego_Init	16	static
+../Core/Src/Conecta3.c:110:6:Juego_Actualizar	32	static
+../Core/Src/Conecta3.c:193:13:IniciarAnimacionCaida	24	static
+../Core/Src/Conecta3.c:218:13:EjecutarJugadaMaquina	16	static
+../Core/Src/Conecta3.c:235:13:RenderizarTablero	32	static
+../Core/Src/Conecta3.c:266:16:VerificarGanador	48	static
