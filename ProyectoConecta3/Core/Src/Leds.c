@@ -13,9 +13,9 @@ static uint8_t LED_Data[NUM_LEDS][3];
 static uint16_t pwmData[(24 * NUM_LEDS) + RESET_PULSES];
 
 // Valores del ciclo de trabajo PWM (Basados en un ARR de 15)
-// Si tu ARR es distinto, esto será un tercio y dos tercios de tu ARR.
-#define PWM_CERO 16  // ~32% de 15
-#define PWM_UNO  32  // ~64% de 15
+// Si ARR es distinto, esto será un tercio y dos tercios de tu ARR.
+#define PWM_CERO 16  // ~32% de
+#define PWM_UNO  32  // ~64% de
 
 // Inicializa apagando todo
 void Matriz_Init(void) {
@@ -64,7 +64,7 @@ void Matriz_ApagarTodo(void) {
 
 // El "motor" de la matriz. Convierte los colores a tiempos PWM y dispara el DMA
 void Matriz_Update(void) {
-	// Si el DMA todavía está mandando datos, ¡salimos y no hacemos nada!
+	// Si el DMA todavía está mandando datos, salimos y no hacemos nada
 	// En lugar de un "if" con un "return", usamos un "while" vacío.
 	    // Esto hace que el micro se quede "dando vueltas" acá unos milisegundos
 	    // hasta que el DMA termine y la bandera vuelva a ser 1.

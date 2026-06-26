@@ -1,10 +1,18 @@
-19:46:01 **** Incremental Build of configuration Debug for project ProyectoConecta3 ****
+17:26:22 **** Incremental Build of configuration Debug for project ProyectoConecta3 ****
 make -j8 all 
+arm-none-eabi-gcc "../Core/Src/Conecta3.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/Conecta3.d" -MT"Core/Src/Conecta3.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/Conecta3.o"
+arm-none-eabi-gcc "../Core/Src/Leds.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F407xx -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -fcyclomatic-complexity -MMD -MP -MF"Core/Src/Leds.d" -MT"Core/Src/Leds.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/Leds.o"
+arm-none-eabi-gcc -o "ProyectoConecta3.elf" @"objects.list"   -mcpu=cortex-m4 -T"C:\Users\mateo\OneDrive\Documentos\FACULTAD\FACULTAD\Sistemas Digitales\PoyectoFinal\ProyectoConecta3\STM32F407VGTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="ProyectoConecta3.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Finished building target: ProyectoConecta3.elf
+ 
 arm-none-eabi-size  ProyectoConecta3.elf 
+arm-none-eabi-objdump -h -S ProyectoConecta3.elf  > "ProyectoConecta3.list"
    text	   data	    bss	    dec	    hex	filename
-  17660	     64	   3440	  21164	   52ac	ProyectoConecta3.elf
+  21376	     64	   3840	  25280	   62c0	ProyectoConecta3.elf
 Finished building: default.size.stdout
  
+Finished building: ProyectoConecta3.list
+ 
 
-19:46:02 Build Finished. 0 errors, 0 warnings. (took 303ms)
+17:26:26 Build Finished. 0 errors, 0 warnings. (took 4s.8ms)
 

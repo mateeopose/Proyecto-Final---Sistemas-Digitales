@@ -1,3 +1,4 @@
+"./Core/Src/Buzzer.o"
 "./Core/Src/Conecta3.o"
 "./Core/Src/Leds.o"
 "./Core/Src/Teclado.o"

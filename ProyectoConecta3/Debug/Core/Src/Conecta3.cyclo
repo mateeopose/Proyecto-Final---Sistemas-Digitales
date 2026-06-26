@@ -1,7 +1,7 @@
-../Core/Src/Conecta3.c:42:6:Juego_ProcesarEntrada	15
-../Core/Src/Conecta3.c:89:6:Juego_Init	3
-../Core/Src/Conecta3.c:110:6:Juego_Actualizar	19
-../Core/Src/Conecta3.c:193:13:IniciarAnimacionCaida	4
-../Core/Src/Conecta3.c:218:13:EjecutarJugadaMaquina	3
-../Core/Src/Conecta3.c:235:13:RenderizarTablero	7
-../Core/Src/Conecta3.c:266:16:VerificarGanador	21
+../Core/Src/Conecta3.c:43:6:Juego_ProcesarEntrada	15
+../Core/Src/Conecta3.c:79:6:Juego_Init	3
+../Core/Src/Conecta3.c:94:6:Juego_Actualizar	29
+../Core/Src/Conecta3.c:205:13:IniciarAnimacionCaida	4
+../Core/Src/Conecta3.c:223:13:EjecutarJugadaMaquina	3
+../Core/Src/Conecta3.c:234:13:RenderizarTablero	7
+../Core/Src/Conecta3.c:258:16:VerificarGanador	21

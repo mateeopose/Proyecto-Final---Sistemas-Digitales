@@ -3,6 +3,9 @@
 	<item key="hasShownOverlayPopupBefore" value="true"/>
 	<item key="replaceBarOpen" value="false"/>
 	<list key="searchhistory">
+		<item value="channel_1"/>
+		<item value="channel"/>
+		<item value="tim4"/>
 		<item value="juego_act"/>
 		<item value="juego_init"/>
 		<item value="fila_destino"/>
