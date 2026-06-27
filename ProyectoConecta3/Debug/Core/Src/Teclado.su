@@ -1,4 +1,0 @@
-../Core/Src/Teclado.c:39:6:Teclado_Init	16	static
-../Core/Src/Teclado.c:48:6:Teclado_EXTI_Callback	16	static
-../Core/Src/Teclado.c:62:6:Teclado_Update	32	static,ignoring_inline_asm
-../Core/Src/Teclado.c:140:9:Teclado_GetUltimaTecla	16	static

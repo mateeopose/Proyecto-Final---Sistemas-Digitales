@@ -1,4 +1,0 @@
-../Core/Src/Buzzer.c:28:6:SONIDO_TECLA	16	static
-../Core/Src/Buzzer.c:49:6:MELODIA_DERROTA	16	static
-../Core/Src/Buzzer.c:126:6:MELODIA_VICTORIA	16	static
-../Core/Src/Buzzer.c:188:6:HAL_TIM_PeriodElapsedCallback	16	static
