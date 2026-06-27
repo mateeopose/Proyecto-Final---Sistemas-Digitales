@@ -1,10 +1,10 @@
 #include "Leds.h"
 
-// Variable externa de tu Timer (Asegúrate de que coincida con la tuya, ej: htim4)
+// Variable externa de Timer
 extern TIM_HandleTypeDef htim4;
 // 1 significa "Libre", 0 significa "Transmitiendo"
 volatile uint8_t dma_listo = 1;
-// Almacenamos el color deseado para cada LED [R, G, B]
+// Almacenamiento para cada LED [R, G, B]
 static uint8_t LED_Data[NUM_LEDS][3];
 
 // Arreglo PWM que el DMA mandará al Timer
@@ -13,9 +13,9 @@ static uint8_t LED_Data[NUM_LEDS][3];
 static uint16_t pwmData[(24 * NUM_LEDS) + RESET_PULSES];
 
 // Valores del ciclo de trabajo PWM (Basados en un ARR de 15)
-// Si ARR es distinto, esto será un tercio y dos tercios de tu ARR.
-#define PWM_CERO 16  // ~32% de
-#define PWM_UNO  32  // ~64% de
+// Un tercio y dos tercios del ARR
+#define PWM_CERO 16  // ~32%
+#define PWM_UNO  32  // ~64%
 
 // Inicializa apagando todo
 void Matriz_Init(void) {
@@ -27,11 +27,11 @@ void Matriz_Init(void) {
 // Traduce la coordenada lógica del juego al LED físico real de la tira
 static uint8_t MapearCoordenada(uint8_t fila, uint8_t columna) {
 
-    // Matriz visual del tablero.
-    // Fila 0 es arriba, Fila 7 es abajo.
-    // Columna 0 es la izquierda, Columna 3 es la derecha.
+    // Matriz visual del tablero
+    // Fila 0 es arriba, Fila 7 es abajo
+    // Columna 0 es la izquierda, Columna 3 es la derecha
     static const uint8_t mapa_leds[8][4] = {
-        { 31,  27,  23,  19 },  // Fila 0 (Tope del tablero)
+        { 31,  27,  23,  19 },  // Fila 0 (Topee del tablero)
         { 30,  26,  22,  18 },  // Fila 1
         { 29,  25,  21,  17 },  // Fila 2
         { 28,  24,  20,  16 },  // Fila 3
@@ -45,7 +45,7 @@ static uint8_t MapearCoordenada(uint8_t fila, uint8_t columna) {
 }
 // Guarda un color RGB en la memoria de un LED específico
 void Matriz_SetLed(uint8_t fila, uint8_t columna, uint8_t red, uint8_t green, uint8_t blue) {
-    if(fila >= MATRIZ_FILAS || columna >= MATRIZ_COLS) return; // Protección
+    if(fila >= MATRIZ_FILAS || columna >= MATRIZ_COLS) return; // Protección para tomar solo los datos que corresponden
 
     uint8_t id = MapearCoordenada(fila, columna);
 
@@ -66,13 +66,13 @@ void Matriz_ApagarTodo(void) {
 void Matriz_Update(void) {
 	// Si el DMA todavía está mandando datos, salimos y no hacemos nada
 	// En lugar de un "if" con un "return", usamos un "while" vacío.
-	    // Esto hace que el micro se quede "dando vueltas" acá unos milisegundos
+	    // Esto hace que el micro se quede dando vueltas acá unos milisegundos
 	    // hasta que el DMA termine y la bandera vuelva a ser 1.
 	    if (dma_listo == 0) {
 	        return;
 	    }
 
-	    // Bajamos la bandera: El DMA ahora está OCUPADO
+	    // Bajamos bandera: El DMA ahora está OCUPADO
 	    dma_listo = 0;
 	    HAL_TIM_PWM_Stop(&htim4, TIM_CHANNEL_1);
     uint32_t indx = 0;
@@ -82,7 +82,7 @@ void Matriz_Update(void) {
         // WS2812 espera los colores en formato GRB (Verde, Rojo, Azul)
         color24 = ((LED_Data[i][1] << 16) | (LED_Data[i][0] << 8) | (LED_Data[i][2]));
 
-        // Leemos cada uno de los 24 bits (del más significativo al menos)
+        // Lee cada uno de los 24 bits (del más significativo al menos)
         for (int b = 23; b >= 0; b--) {
             if (color24 & (1 << b)) {
                 pwmData[indx] = PWM_UNO;  // Bit en 1
@@ -93,13 +93,13 @@ void Matriz_Update(void) {
         }
     }
 
-    // Agregamos los ceros al final para la señal de Reset/Latch
+    // ceros al final para la señal de Reset/Latch
     for (int i = 0; i < RESET_PULSES; i++) {
         pwmData[indx] = 0;
         indx++;
     }
 
-    // Disparamos la transferencia DMA apuntando al registro CCR1 del Timer 4
+    // Se dispara la transferencia DMA apuntando al registro CCR1 del Timer 4
     HAL_TIM_PWM_Start_DMA(&htim4, TIM_CHANNEL_1, (uint32_t *)pwmData, indx);
 }
 
@@ -111,17 +111,17 @@ void HAL_TIM_PWM_PulseFinishedCallback(TIM_HandleTypeDef *htim) {
         TIM4->CCR1 = 0;
         HAL_TIM_PWM_Start(&htim4, TIM_CHANNEL_1);
 
-        // ¡Terminó! Levantamos la bandera para permitir una nueva transmisión
+        // Se levanta la bandera para permitir una nueva transmisión
         dma_listo = 1;
     }
 }
-// Esta función atrapa el error si el DMA colapsa y libera el programa
+// Esta función atrapa el error si el DMA colapsa y libera el programa, muchos problemas sin esto
 void HAL_TIM_PWM_ErrorCallback(TIM_HandleTypeDef *htim) {
     if(htim->Instance == TIM4) {
-        // Apagamos el DMA para que no siga haciendo lio
+        // Se apaga el DMA para que no siga haciendo lio
         HAL_TIM_PWM_Stop_DMA(&htim4, TIM_CHANNEL_1);
 
-        // ¡Liberamos la bandera para que el teclado siga funcionando!
+        // Se libera la bandera para que el teclado siga funcionando
         dma_listo = 1;
     }
 }

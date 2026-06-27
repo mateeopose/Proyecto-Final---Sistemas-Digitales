@@ -13,22 +13,22 @@
 /* Definiciones de celdas del tablero virtual */
 #define VACIO      0
 #define JUGADOR_1  1  /**< Identificador para el Jugador 1 (Fichas Rojas) */
-#define JUGADOR_2  2  /**< Identificador para el Jugador 2 / Máquina (Fichas Verdes) */
+#define JUGADOR_2  2  /**< Identificador para el Jugador 2 o la Máquina (Fichas Verdes) */
 
 /* Enumeración formal de los estados principales del sistema (FSM) */
 typedef enum {
     ESTADO_MENU = 0,  /**< Espera de selección de modo de juego */
-    ESTADO_JUEGO,     /**< Partida en curso */
+    ESTADO_JUEGO,    /**< Partida en curso */
     ESTADO_VICTORIA   /**< Partida finalizada con un ganador */
 } EstadoJuego_t;
 
 /* Enumeración de los modos de juego soportados */
 typedef enum {
-    MODO_PVP = 0,     /**< Jugador contra Jugador (Local) */
-    MODO_PVM          /**< Jugador contra Máquina (Inteligencia Artificial) */
+    MODO_PVP = 0,   /**< Jugador contra Jugador (Local) */
+    MODO_PVM          /**< Jugador contra Máquina (IA) */
 } ModoJuego_t;
 
-/* API Pública para el flujo principal del programa */
+/* Público para el flujo principal del programa */
 void Juego_Init(void);
 void Juego_ProcesarEntrada(uint8_t tecla);
 void Juego_Actualizar(void);

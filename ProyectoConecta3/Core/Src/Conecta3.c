@@ -40,7 +40,7 @@ static void IniciarAnimacionCaida(uint8_t columna, uint8_t jugador);
 static void EjecutarJugadaMaquina(void);
 static void RenderizarTablero(void);
 
-void Juego_ProcesarEntrada(uint8_t tecla) {
+void Juego_ProcesarEntrada(uint8_t tecla) {   //Se fija que pasa con la entrada y ve si entra en modo de juego PVP o Vs Máquina
     if (estado_sistema == ESTADO_MENU) {
         if (tecla == 13 || tecla == 14) {
             modo_seleccionado = MODO_PVP;
@@ -56,7 +56,7 @@ void Juego_ProcesarEntrada(uint8_t tecla) {
     }
 
     if (estado_sistema == ESTADO_JUEGO) {
-        if (tecla == 5) {
+        if (tecla == 5) {  //Tecla de reset
             Juego_Init();
             return;
         }
@@ -72,7 +72,7 @@ void Juego_ProcesarEntrada(uint8_t tecla) {
     }
 
     if (estado_sistema == ESTADO_VICTORIA && tecla == 5) {
-        Juego_Init();
+        Juego_Init(); //reinicio
     }
 }
 
@@ -107,7 +107,7 @@ void Juego_Actualizar(void) {
         return;
     }
 
-    /* ESTADO VICTORIA: Animación de festejo (Parpadeo selectivo) */
+    /* ESTADO VICTORIA: Animación de festejo (Parpadeo selectivo, verde o rijo) */
     if (estado_sistema == ESTADO_VICTORIA) {
         if (HAL_GetTick() - victoria_tiempo_anterior >= 300) {
             victoria_tiempo_anterior = HAL_GetTick();
@@ -159,14 +159,14 @@ void Juego_Actualizar(void) {
             tablero[anim_fila_destino][anim_columna] = anim_jugador;
             animacion_activa = 0;
 
-            // Verificamos si alguien ganó
+            // Verificación si alguien ganó
             jugador_ganador = VerificarGanador();
 
             if (jugador_ganador != 0) {
                 estado_sistema = ESTADO_VICTORIA;
                 victoria_tiempo_anterior = HAL_GetTick(); // Iniciamos el timer del parpadeo
 
-                // Disparamos la melodía correspondiente
+                // Disparo la melodía correspondiente
                 if (modo_seleccionado == MODO_PVM && jugador_ganador == JUGADOR_2) {
                     MELODIA_DERROTA();
                 } else {
@@ -220,7 +220,7 @@ static void IniciarAnimacionCaida(uint8_t columna, uint8_t jugador) {
     }
 }
 
-static void EjecutarJugadaMaquina(void) {
+static void EjecutarJugadaMaquina(void) { //jugada random de la máquina esta dada por el resto de una division con el contador interno (muy aleatorio)
     uint8_t col_elegida = HAL_GetTick() % 4;
     for (uint8_t i = 0; i < 4; i++) {
         uint8_t col_evaluar = (col_elegida + i) % 4;
@@ -231,7 +231,7 @@ static void EjecutarJugadaMaquina(void) {
     }
 }
 
-static void RenderizarTablero(void) {
+static void RenderizarTablero(void) { //refresco de pantalla, si no esta se comienza a trabajr a medida que haya más fichas
     for (int f = 1; f < 8; f++) {
         for (int c = 0; c < 4; c++) {
             if (tablero[f][c] == JUGADOR_1) {
@@ -255,7 +255,7 @@ static void RenderizarTablero(void) {
     }
 }
 
-static uint8_t VerificarGanador(void) {
+static uint8_t VerificarGanador(void) {//Verificación vertical
     for (int col = 0; col < 4; col++) {
         for (int fila = 1; fila <= 5; fila++) {
             uint8_t ficha = tablero[fila][col];
@@ -264,7 +264,7 @@ static uint8_t VerificarGanador(void) {
             }
         }
     }
-    for (int fila = 1; fila < 8; fila++) {
+    for (int fila = 1; fila < 8; fila++) { //Verificación Lateral
         for (int col = 0; col <= 1; col++) {
             uint8_t ficha = tablero[fila][col];
             if (ficha != VACIO && ficha == tablero[fila][col + 1] && ficha == tablero[fila][col + 2]) {
@@ -272,7 +272,7 @@ static uint8_t VerificarGanador(void) {
             }
         }
     }
-    for (int fila = 1; fila <= 5; fila++) {
+    for (int fila = 1; fila <= 5; fila++) { //Estas dos que siguen son verificaciones en diagonal para cada lado (izq. y derecha)
         for (int col = 0; col <= 1; col++) {
             uint8_t ficha = tablero[fila][col];
             if (ficha != VACIO && ficha == tablero[fila + 1][col + 1] && ficha == tablero[fila + 2][col + 2]) {

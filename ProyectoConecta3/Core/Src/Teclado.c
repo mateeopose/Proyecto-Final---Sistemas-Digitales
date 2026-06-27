@@ -34,10 +34,10 @@ static uint16_t pines_filas[4]       = {R1_TECLADO_Pin, R2_TECLADO_Pin, R3_TECLA
 static GPIO_TypeDef* puertos_cols[4]  = {C1_COLUMNA_GPIO_Port, C2_COLUMNA_GPIO_Port, C3_COLUMNA_GPIO_Port, C4_COLUMNA_GPIO_Port};
 static uint16_t pines_cols[4]        = {C1_COLUMNA_Pin, C2_COLUMNA_Pin, C3_COLUMNA_Pin, C4_COLUMNA_Pin};
 
-// --- FUNCIONES ---
+// FUNCIONES  del teclado
 
 void Teclado_Init(void) {
-    // Opción B: Todas las filas (R) en 0 (GND) para esperar la interrupción
+    //Todas las filas (R) en 0 (GND) para esperar la interrupción
     for(int i = 0; i < 4; i++) {
         HAL_GPIO_WritePin(puertos_filas[i], pines_filas[i], GPIO_PIN_RESET);
     }
@@ -58,7 +58,7 @@ void Teclado_EXTI_Callback(uint16_t GPIO_Pin) {
     }
 }
 
-// Máquina de estados principal. Va dentro del while(1) en main.c
+// Máquina de estados principal. Va en main.c
 void Teclado_Update(void) {
     switch(estado_actual) {
         case ESTADO_REPOSO:
@@ -82,10 +82,10 @@ void Teclado_Update(void) {
             for(int f = 0; f < 4; f++) {
                 HAL_GPIO_WritePin(puertos_filas[f], pines_filas[f], GPIO_PIN_RESET);
 
-                // Micro-retardo para estabilización eléctrica
+                // Micro-retardo para estabilización eléctrica, es por seguridad solamente
                 for(volatile int nop = 0; nop < 50; nop++) { __NOP(); }
 
-                // Leemos las columnas (C)
+                // Lectura de columnas (C)
                 for(int c = 0; c < 4; c++) {
                     if(HAL_GPIO_ReadPin(puertos_cols[c], pines_cols[c]) == GPIO_PIN_RESET) {
                         tecla_detectada = mapa_teclas[f][c];
@@ -105,18 +105,18 @@ void Teclado_Update(void) {
             if(tecla_detectada != 0) {
                 ultima_tecla = tecla_detectada;
 
-                // LÓGICA DE JUEGO (Ej: procesar el movimiento)
+                // LÓGICA DE JUEGO
 
 
                 estado_actual = ESTADO_ESPERA_SOLTAR;
             } else {
-                Teclado_Init(); // Falso contacto
+                Teclado_Init(); // Falso contacto, por las dudas
             }
             break;
         }
 
         case ESTADO_ESPERA_SOLTAR:
-            // Chequeamos que la columna (C) haya vuelto a 1 (Pull-Up) -> se soltó la tecla
+            // Chequeamos que la columna (C) haya vuelto a 1 (Pull-Up), indica que se soltó la tecla
             if(HAL_GPIO_ReadPin(col_activa_port, col_activa_pin) == GPIO_PIN_SET) {
                 tiempo_referencia = HAL_GetTick();
                 estado_actual = ESTADO_ANTIRREBOTE_SOLTAR;
@@ -126,7 +126,7 @@ void Teclado_Update(void) {
         case ESTADO_ANTIRREBOTE_SOLTAR:
             if((HAL_GetTick() - tiempo_referencia) >= TIEMPO_ANTIRREBOTE) {
                 if(HAL_GPIO_ReadPin(col_activa_port, col_activa_pin) == GPIO_PIN_SET) {
-                    // Limpiamos banderas EXTI pendientes por si rebotó al soltar
+                    // Limpieza EXTI pendientes por si rebotó al soltar
                 	           __HAL_GPIO_EXTI_CLEAR_IT(C1_COLUMNA_Pin | C2_COLUMNA_Pin | C3_COLUMNA_Pin | C4_COLUMNA_Pin);
                     Teclado_Init(); // Volvemos todas las filas a 0 y estado a REPOSO
                 } else {

@@ -2,13 +2,11 @@
 #include "Buzzer.h"
 #include <stdint.h> // Para que reconozca uint8_t y uint16_t
 
-// Importamos los handlers de los timers desde el main (generados por CubeIDE)
+// Importamos los timers desde el main (generados por CubeIDE)
 extern TIM_HandleTypeDef htim3;
 extern TIM_HandleTypeDef htim14;
-//extern TIM_HandleTypeDef htim4; // Asegurate de tener este si en algún lado quedó un TIM4 colgado, aunque en la versión final limpiamos todo a TIM3.
 
-/* USER CODE BEGIN PV */
-// Aca siguen tus variables: volatile uint8_t flag = 0; ...
+
 
 
 volatile uint8_t flag = 0;
@@ -16,7 +14,7 @@ volatile uint8_t MV_RUN = 0;
 volatile uint8_t MD_RUN = 0;
 volatile uint8_t ST_RUN = 0;
 volatile uint16_t sound_cnt = 0;
-/* USER CODE END PV */
+
 //*******************************
 /* USER CODE BEGIN PFP */
 void MELODIA_DERROTA(void);
